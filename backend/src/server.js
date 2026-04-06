@@ -6,6 +6,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -17,13 +18,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
+// ✅ FIXED: Dynamic CORS for Local & Production
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "https://interaction-time-2bo5.vercel.app" // Your Vercel URL
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -32,7 +45,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 
-// Start server ONLY after DB connection
+// Deployment: Serve static assets if in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(process.cwd(), "../frontend/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "../frontend/dist", "index.html"));
+  });
+}
+
 const startServer = async () => {
   try {
     await connectDB();
