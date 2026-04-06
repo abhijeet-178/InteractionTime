@@ -33,12 +33,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 
 // Deployment: Serve static assets if in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(process.cwd(), "../frontend/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(process.cwd(), "../frontend/dist", "index.html"));
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(process.cwd(), "../frontend/dist")));
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(process.cwd(), "../frontend/dist", "index.html"));
+//   });
+// }
 
 const startServer = async () => {
   try {
