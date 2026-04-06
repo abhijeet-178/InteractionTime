@@ -25,6 +25,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Welcome to the Streamify API");
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
