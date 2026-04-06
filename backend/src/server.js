@@ -19,8 +19,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://interaction-time-oqgu.vercel.app",
+]
 
 app.use(cors({
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
